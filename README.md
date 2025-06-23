@@ -83,6 +83,35 @@ La contraseña es almacenada de forma segura mediante el algoritmo `BCrypt`.
 
 ---
 
+## 🚧 Avances recientes
+
+### 🔐 Seguridad
+
+- Implementada autenticación básica (HTTP Basic Auth) con Spring Security.
+- Configuración inicial en `SecurityConfig.java`, habilitando el endpoint de registro como público.
+- Los demás endpoints requieren autenticación.
+
+### 👤 Usuarios
+
+- Endpoint `POST /api/usuarios/registrar`: permite registrar un nuevo usuario. La contraseña se encripta con BCrypt.
+- Endpoint `GET /api/usuarios`: requiere autenticación y devuelve una lista de usuarios sin incluir las contraseñas (uso de `UsuarioResponseDTO`).
+
+### 🧪 Pruebas realizadas
+
+- Verificado en Postman:
+  - Registro de usuario → ✅
+  - Acceso autenticado a listado de usuarios → ✅
+  - Protección de contraseña en respuesta JSON → ✅
+
+---
+
+## 🔒 Buenas prácticas aplicadas
+
+- Contraseñas no visibles en respuestas JSON.
+- `application.properties` ignorado por Git y reemplazado por `application-example.properties`.
+
+---
+
 ## 🧪 Entorno de desarrollo utilizado
 
 - Sistema operativo: Linux Debian 12
