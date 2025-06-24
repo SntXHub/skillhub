@@ -1,136 +1,107 @@
-# SkillHub - Backend (Spring Boot)
+# 🛠️ Skillhub Backend
 
-Proyecto backend para SkillHub, una aplicación orientada a la gestión de usuarios y habilidades, desarrollado con Spring Boot y MariaDB.
+Este proyecto es el backend del sistema **Skillhub**, una plataforma para la gestión de usuarios y futuros módulos de habilidades, autenticación, y perfiles técnicos. Desarrollado en Java con Spring Boot.
+
+---
 
 ## 🚀 Tecnologías utilizadas
 
-- Java 17+
+- Java 17
 - Spring Boot 3.5.3
-- Spring Data JPA
 - Spring Security
-- MariaDB (soportado también MySQL)
-- Lombok
+- Spring Data JPA
+- Hibernate
+- MariaDB
 - Maven
-- Postman (para pruebas)
-- Git y GitHub
+- Swagger / Springdoc OpenAPI
+- Lombok
 
-## ⚙️ Configuración inicial
+---
 
-1. Clonar el repositorio:
+## 🧱 Estructura del proyecto
 
-   ```bash
-   git clone https://github.com/sntxhub/skillhub-backend.git
-   cd skillhub-backend
-   ```
-
-2. Crear la base de datos:
-
-   ```sql
-   CREATE DATABASE skillhubdb DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   ```
-
-3. Copiar el archivo de configuración de ejemplo:
-
-   ```bash
-   cp src/main/resources/application-example.properties src/main/resources/application.properties
-   ```
-
-4. Editar `application.properties` y completar:
-
-   - `spring.datasource.username`
-   - `spring.datasource.password`
-
-5. Ejecutar la aplicación:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-
-## 📮 API inicial disponible
-
-### POST /api/usuarios/registrar
-
-Registra un nuevo usuario.
-
-**Body (JSON):**
-
-```json
-{
-  "nombre": "Nombre Apellido",
-  "correo": "usuario@email.com",
-  "contraseña": "password123"
-}
+```bash
+skillhub-backend/
+├── pom.xml
+├── README.md
+├── mvnw / mvnw.cmd
+├── src/
+│   ├── main/
+│   │   ├── java/com/skillhub/skillhub/
+│   │   │   ├── config/                  # Configuraciones de seguridad (SecurityConfig)
+│   │   │   ├── controller/              # Controlador REST (UsuarioController)
+│   │   │   ├── dto/                     # Clases DTO (UsuarioDTO, UsuarioResponseDTO)
+│   │   │   ├── model/                   # Entidades JPA (Usuario)
+│   │   │   ├── repository/              # Repositorios Spring Data JPA (UsuarioRepository)
+│   │   │   ├── security/                # Servicios de seguridad (CustomUserDetailsService)
+│   │   │   └── SkillhubApplication.java # Clase principal
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       └── application-example.properties
+│   └── test/
+│       └── java/com/skillhub/skillhub/
+│           └── SkillhubApplicationTests.java
 ```
 
-**Respuesta esperada (ejemplo):**
+---
 
-```json
-{
-  "id": 1,
-  "correo": "usuario@email.com",
-  "nombre": "Nombre Apellido",
-  "contraseña": "$2a$10$..."
-}
+## 🔐 Seguridad
+
+Se implementó **Spring Security** con autenticación básica (`HTTP Basic Auth`). Las contraseñas son encriptadas usando BCrypt.
+
+- `POST /api/usuarios/registrar`: Permite registrar un nuevo usuario.
+- `GET /api/usuarios`: Retorna la lista de usuarios registrados (requiere autenticación).
+
+> Actualmente no se gestionan roles ni permisos avanzados.
+
+---
+
+## 🧪 Pruebas en Postman
+
+- ✅ `POST /api/usuarios/registrar` funciona correctamente.
+- ✅ `GET /api/usuarios` responde con 200 OK y muestra los usuarios sin exponer las contraseñas.
+
+---
+
+## 📘 Documentación Swagger
+
+Swagger UI ya está integrado para facilitar el desarrollo y la prueba de la API.
+
+- Acceso local a la documentación interactiva:
+
+```
+http://localhost:8080/swagger-ui/index.html
 ```
 
-La contraseña es almacenada de forma segura mediante el algoritmo `BCrypt`.
+Desde Swagger podés:
 
-## 📦 Estado actual del proyecto
-
-- ✅ Backend funcional
-- ✅ Registro de usuarios con contraseña encriptada
-- 🔐 Seguridad básica configurada (Spring Security)
-- 🛠️ En desarrollo: login, autenticación JWT, estructura de perfiles y habilidades
+- Ver los endpoints disponibles.
+- Probar peticiones directamente desde el navegador.
+- Consultar modelos de datos (DTOs).
+- Autenticarse con usuario/contraseña para rutas protegidas.
 
 ---
 
-## 🚧 Avances recientes
+## ⚙️ Recomendaciones de desarrollo
 
-### 🔐 Seguridad
-
-- Implementada autenticación básica (HTTP Basic Auth) con Spring Security.
-- Configuración inicial en `SecurityConfig.java`, habilitando el endpoint de registro como público.
-- Los demás endpoints requieren autenticación.
-
-### 👤 Usuarios
-
-- Endpoint `POST /api/usuarios/registrar`: permite registrar un nuevo usuario. La contraseña se encripta con BCrypt.
-- Endpoint `GET /api/usuarios`: requiere autenticación y devuelve una lista de usuarios sin incluir las contraseñas (uso de `UsuarioResponseDTO`).
-
-### 🧪 Pruebas realizadas
-
-- Verificado en Postman:
-  - Registro de usuario → ✅
-  - Acceso autenticado a listado de usuarios → ✅
-  - Protección de contraseña en respuesta JSON → ✅
+- **Detener/Reiniciar la app:** Usar el botón de depuración de VS Code o `Ctrl+C` en la terminal.
+- **Ejecución en VS Code:** Se configuró correctamente el `launch.json`.
+- **Swagger y Postman:** Usar usuarios reales con credenciales válidas para probar rutas protegidas.
 
 ---
 
-## 🔒 Buenas prácticas aplicadas
+## 📌 Pendientes para próximas tareas
 
-- Contraseñas no visibles en respuestas JSON.
-- `application.properties` ignorado por Git y reemplazado por `application-example.properties`.
-
----
-
-## 🧪 Entorno de desarrollo utilizado
-
-- Sistema operativo: Linux Debian 12
-- IDE principal: VS Code
-- Base de datos: MariaDB
-- Docker disponible para pruebas futuras
-- Postman para pruebas de endpoints
+- Agregar validaciones de campos en registro.
+- Implementar control de errores centralizado.
+- Agregar roles y autorización basada en roles.
+- Conectar con un frontend (por ejemplo React).
+- Expandir endpoints para CRUD completo.
+- Mejorar DTOs y mapeos.
+- Escribir tests unitarios y de integración.
 
 ---
 
-## 🤝 Contribución
+## 🤝 Contribuciones
 
-Si querés colaborar, podés abrir un issue o enviar un pull request.  
-Para cualquier sugerencia, mejora o error, no dudes en avisar.
-
----
-
-## 📄 Licencia
-
-Este proyecto se encuentra en desarrollo académico y formativo. Puede adaptarse o reutilizarse con fines educativos y personales. Créditos al autor original.
-
----
+Este proyecto está en desarrollo inicial. Se agradecen aportes, sugerencias y mejoras.
