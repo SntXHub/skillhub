@@ -2,7 +2,6 @@ package com.skillhub.skillhub.security;
 
 import com.skillhub.skillhub.model.Usuario;
 import com.skillhub.skillhub.repository.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
 
-    @Autowired
+    // Constructor sin @Autowired (opcional desde Spring 4.3 si solo hay uno)
     public CustomUserDetailsService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
@@ -26,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new User(
                 usuario.getCorreo(),
                 usuario.getContraseña(),
-                Collections.emptyList() // Sin roles por ahora
+                Collections.emptyList() // Aún sin roles definidos
         );
     }
 }
