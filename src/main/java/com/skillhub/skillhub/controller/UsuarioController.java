@@ -5,7 +5,7 @@ import com.skillhub.skillhub.dto.UsuarioResponseDTO;
 import com.skillhub.skillhub.model.Usuario;
 import com.skillhub.skillhub.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +17,16 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // POST: /api/usuarios/registrar
     @PostMapping("/registrar")
-    public Usuario registrar(@RequestBody UsuarioDTO dto) {
+    public UsuarioResponseDTO registrar(@RequestBody UsuarioDTO dto) {
+        if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
+            throw new RuntimeException("Ya existe un usuario con ese correo");
+        }
+
         String contraseñaEncriptada = passwordEncoder.encode(dto.getContraseña());
 
         Usuario usuario = Usuario.builder()
@@ -30,7 +35,9 @@ public class UsuarioController {
                 .contraseña(contraseñaEncriptada)
                 .build();
 
-        return usuarioRepository.save(usuario);
+        Usuario guardado = usuarioRepository.save(usuario);
+
+        return new UsuarioResponseDTO(guardado.getId(), guardado.getNombre(), guardado.getCorreo());
     }
 
     // GET: /api/usuarios

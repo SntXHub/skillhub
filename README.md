@@ -80,9 +80,11 @@ Una vez ejecutada la aplicación, accedé a la documentación de la API en:
 ## ✅ Estado actual del proyecto
 
 - ✔️ Backend funcional
+- ✔️ Configurado backend Spring Boot con autenticación JWT
+- ✔️ Base de datos funcional
 - ✔️ Registro de usuarios con contraseña encriptada
 - ✔️ Seguridad básica (HTTP Basic con Spring Security)
-- ✔️ Documentación Swagger/OpenAPI funcionando
+- ✔️ Documentación Swagger/OpenAPI operativo y funcionando
 - ⚙️ Entorno de desarrollo estable
 
 ---
@@ -91,10 +93,12 @@ Una vez ejecutada la aplicación, accedé a la documentación de la API en:
 
 Verificado con Postman:
 
-- Registro de usuario → ✅
+- Endpoint POST /api/auth/login funcionando correctamente con usuarios registrados → ✅
+- Endpoint POST /api/usuarios/registrar permite registrar usuarios nuevos con contraseña encriptada (bcrypt) → ✅
 - Autenticación básica → ✅
 - Acceso autenticado a endpoints protegidos → ✅
 - Visualización en Swagger → ✅
+- Se excluye el campo contraseña en las respuestas por seguridad
 
 ---
 
@@ -122,11 +126,12 @@ Verificado con Postman:
 
 ## 📌 Próximos pasos
 
-- Implementar autenticación con JWT
-- Agregar endpoints para login y logout
-- Crear entidades y relaciones: Perfiles, Habilidades, Roles
-- Validaciones de formularios (Bean Validation)
-- Manejo global de errores con excepciones personalizadas
+- Validar que el correo no esté registrado previamente en /registrar
+- Manejar errores con respuestas HTTP adecuadas (400, 409, etc.)
+- Mejorar documentación Swagger (descripciones, ejemplos)
+- Implementar sistema de roles (si aplica)
+- Añadir tests unitarios y de integración
+- Preparar entorno para despliegue
 
 ---
 
@@ -140,4 +145,3 @@ Toda sugerencia o reporte de error es bienvenido.
 ## 📄 Licencia
 
 Este proyecto es de carácter académico y formativo. Puede reutilizarse con fines educativos.
-
