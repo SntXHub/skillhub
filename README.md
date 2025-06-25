@@ -1,107 +1,143 @@
-# 🛠️ Skillhub Backend
+# SkillHub - Backend (Spring Boot)
 
-Este proyecto es el backend del sistema **Skillhub**, una plataforma para la gestión de usuarios y futuros módulos de habilidades, autenticación, y perfiles técnicos. Desarrollado en Java con Spring Boot.
-
----
+Proyecto backend para SkillHub, una plataforma de gestión de usuarios y habilidades, desarrollada con tecnologías modernas del ecosistema Java.
 
 ## 🚀 Tecnologías utilizadas
 
-- Java 17
+- Java 17+
 - Spring Boot 3.5.3
-- Spring Security
 - Spring Data JPA
-- Hibernate
-- MariaDB
-- Maven
-- Swagger / Springdoc OpenAPI
+- Spring Security
+- Swagger (OpenAPI 3)
+- MariaDB (compatible con MySQL)
 - Lombok
+- Maven
+- Git y GitHub
+- Postman
 
----
+## ⚙️ Configuración inicial
 
-## 🧱 Estructura del proyecto
+1. Clonar el repositorio:
 
 ```bash
-skillhub-backend/
-├── pom.xml
-├── README.md
-├── mvnw / mvnw.cmd
-├── src/
-│   ├── main/
-│   │   ├── java/com/skillhub/skillhub/
-│   │   │   ├── config/                  # Configuraciones de seguridad (SecurityConfig)
-│   │   │   ├── controller/              # Controlador REST (UsuarioController)
-│   │   │   ├── dto/                     # Clases DTO (UsuarioDTO, UsuarioResponseDTO)
-│   │   │   ├── model/                   # Entidades JPA (Usuario)
-│   │   │   ├── repository/              # Repositorios Spring Data JPA (UsuarioRepository)
-│   │   │   ├── security/                # Servicios de seguridad (CustomUserDetailsService)
-│   │   │   └── SkillhubApplication.java # Clase principal
-│   │   └── resources/
-│   │       ├── application.properties
-│   │       └── application-example.properties
-│   └── test/
-│       └── java/com/skillhub/skillhub/
-│           └── SkillhubApplicationTests.java
+git clone https://github.com/sntxhub/skillhub-backend.git
+cd skillhub-backend
 ```
 
----
+2. Crear la base de datos:
 
-## 🔐 Seguridad
-
-Se implementó **Spring Security** con autenticación básica (`HTTP Basic Auth`). Las contraseñas son encriptadas usando BCrypt.
-
-- `POST /api/usuarios/registrar`: Permite registrar un nuevo usuario.
-- `GET /api/usuarios`: Retorna la lista de usuarios registrados (requiere autenticación).
-
-> Actualmente no se gestionan roles ni permisos avanzados.
-
----
-
-## 🧪 Pruebas en Postman
-
-- ✅ `POST /api/usuarios/registrar` funciona correctamente.
-- ✅ `GET /api/usuarios` responde con 200 OK y muestra los usuarios sin exponer las contraseñas.
-
----
-
-## 📘 Documentación Swagger
-
-Swagger UI ya está integrado para facilitar el desarrollo y la prueba de la API.
-
-- Acceso local a la documentación interactiva:
-
-```
-http://localhost:8080/swagger-ui/index.html
+```sql
+CREATE DATABASE skillhubdb DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
-Desde Swagger podés:
+3. Copiar el archivo de configuración de ejemplo:
 
-- Ver los endpoints disponibles.
-- Probar peticiones directamente desde el navegador.
-- Consultar modelos de datos (DTOs).
-- Autenticarse con usuario/contraseña para rutas protegidas.
+```bash
+cp src/main/resources/application-example.properties src/main/resources/application.properties
+```
+
+4. Editar `application.properties` y completar:
+
+- `spring.datasource.username`
+- `spring.datasource.password`
+
+5. Ejecutar la aplicación:
+
+```bash
+./mvnw spring-boot:run
+```
+
+## 📮 API disponible
+
+### POST /api/usuarios/registrar
+
+Registra un nuevo usuario.
+
+**Body (JSON):**
+
+```json
+{
+  "nombre": "Nombre Apellido",
+  "correo": "usuario@email.com",
+  "contraseña": "password123"
+}
+```
+
+### GET /api/usuarios
+
+Requiere autenticación básica (HTTP Basic Auth). Devuelve una lista de usuarios registrados, sin exponer contraseñas.
 
 ---
 
-## ⚙️ Recomendaciones de desarrollo
+## 🧭 Documentación interactiva (Swagger)
 
-- **Detener/Reiniciar la app:** Usar el botón de depuración de VS Code o `Ctrl+C` en la terminal.
-- **Ejecución en VS Code:** Se configuró correctamente el `launch.json`.
-- **Swagger y Postman:** Usar usuarios reales con credenciales válidas para probar rutas protegidas.
+Una vez ejecutada la aplicación, accedé a la documentación de la API en:
 
----
-
-## 📌 Pendientes para próximas tareas
-
-- Agregar validaciones de campos en registro.
-- Implementar control de errores centralizado.
-- Agregar roles y autorización basada en roles.
-- Conectar con un frontend (por ejemplo React).
-- Expandir endpoints para CRUD completo.
-- Mejorar DTOs y mapeos.
-- Escribir tests unitarios y de integración.
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 
 ---
 
-## 🤝 Contribuciones
+## ✅ Estado actual del proyecto
 
-Este proyecto está en desarrollo inicial. Se agradecen aportes, sugerencias y mejoras.
+- ✔️ Backend funcional
+- ✔️ Registro de usuarios con contraseña encriptada
+- ✔️ Seguridad básica (HTTP Basic con Spring Security)
+- ✔️ Documentación Swagger/OpenAPI funcionando
+- ⚙️ Entorno de desarrollo estable
+
+---
+
+## 🧪 Pruebas realizadas
+
+Verificado con Postman:
+
+- Registro de usuario → ✅
+- Autenticación básica → ✅
+- Acceso autenticado a endpoints protegidos → ✅
+- Visualización en Swagger → ✅
+
+---
+
+## 🔒 Buenas prácticas aplicadas
+
+- Contraseñas encriptadas con BCrypt
+- Contraseñas excluidas de respuestas JSON (uso de DTO)
+- Separación de configuración sensible (`application.properties` no versionado)
+- Uso de `UserDetailsService` personalizado
+- `SecurityFilterChain` moderna (sin usar WebSecurityConfigurerAdapter)
+
+---
+
+## 🧑‍💻 Entorno de desarrollo
+
+- Sistema operativo: Debian 12
+- IDE: Visual Studio Code
+- Java 17
+- Base de datos: MariaDB
+- Swagger UI para documentación de API
+- Postman para pruebas manuales
+- Terminal: Tilix + Tmux
+
+---
+
+## 📌 Próximos pasos
+
+- Implementar autenticación con JWT
+- Agregar endpoints para login y logout
+- Crear entidades y relaciones: Perfiles, Habilidades, Roles
+- Validaciones de formularios (Bean Validation)
+- Manejo global de errores con excepciones personalizadas
+
+---
+
+## 🤝 Contribución
+
+Podés colaborar abriendo issues o enviando pull requests.  
+Toda sugerencia o reporte de error es bienvenido.
+
+---
+
+## 📄 Licencia
+
+Este proyecto es de carácter académico y formativo. Puede reutilizarse con fines educativos.
+
