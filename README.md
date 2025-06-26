@@ -1,30 +1,34 @@
 # SkillHub - Backend (Spring Boot)
 
-Proyecto backend para SkillHub, una plataforma de gestión de usuarios y habilidades, desarrollada con tecnologías modernas del ecosistema Java.
+Backend para **SkillHub**, una plataforma de gestión de usuarios y habilidades. Este proyecto está desarrollado con tecnologías modernas del ecosistema Java, e implementa autenticación segura mediante JWT.
+
+---
 
 ## 🚀 Tecnologías utilizadas
 
 - Java 17+
 - Spring Boot 3.5.3
 - Spring Data JPA
-- Spring Security
-- Swagger (OpenAPI 3)
+- Spring Security (JWT)
+- Swagger / OpenAPI 3
 - MariaDB (compatible con MySQL)
 - Lombok
 - Maven
 - Git y GitHub
 - Postman
 
+---
+
 ## ⚙️ Configuración inicial
 
-1. Clonar el repositorio:
+1. Cloná el repositorio:
 
 ```bash
 git clone https://github.com/sntxhub/skillhub-backend.git
 cd skillhub-backend
 ```
 
-2. Crear la base de datos:
+2. Crear la base de datos en MariaDB:
 
 ```sql
 CREATE DATABASE skillhubdb DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -40,6 +44,7 @@ cp src/main/resources/application-example.properties src/main/resources/applicat
 
 - `spring.datasource.username`
 - `spring.datasource.password`
+- (Opcional) Cambiar el puerto o configuración JWT
 
 5. Ejecutar la aplicación:
 
@@ -47,14 +52,14 @@ cp src/main/resources/application-example.properties src/main/resources/applicat
 ./mvnw spring-boot:run
 ```
 
-## 📮 API disponible
+---
 
-### POST /api/usuarios/registrar
+## 📮 Endpoints disponibles
 
+### POST `/api/usuarios/registrar`
 Registra un nuevo usuario.
 
 **Body (JSON):**
-
 ```json
 {
   "nombre": "Nombre Apellido",
@@ -63,52 +68,65 @@ Registra un nuevo usuario.
 }
 ```
 
-### GET /api/usuarios
+### POST `/api/auth/login`
+Devuelve un JWT válido para autenticación de endpoints protegidos.
 
-Requiere autenticación básica (HTTP Basic Auth). Devuelve una lista de usuarios registrados, sin exponer contraseñas.
+**Body (JSON):**
+```json
+{
+  "correo": "usuario@email.com",
+  "contraseña": "password123"
+}
+```
+
+### GET `/api/usuarios`
+Devuelve todos los usuarios registrados (requiere autenticación con JWT).
+
+### GET `/api/usuarios/perfil`
+Devuelve los datos del usuario autenticado.
 
 ---
 
 ## 🧭 Documentación interactiva (Swagger)
 
-Una vez ejecutada la aplicación, accedé a la documentación de la API en:
+Una vez ejecutada la aplicación, podés acceder a la documentación interactiva en:
 
-[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+🔗 [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
 
 ---
 
 ## ✅ Estado actual del proyecto
 
-- ✔️ Backend funcional
-- ✔️ Configurado backend Spring Boot con autenticación JWT
-- ✔️ Base de datos funcional
-- ✔️ Registro de usuarios con contraseña encriptada
-- ✔️ Seguridad básica (HTTP Basic con Spring Security)
-- ✔️ Documentación Swagger/OpenAPI operativo y funcionando
-- ⚙️ Entorno de desarrollo estable
+- ✔️ Backend funcional y estable
+- ✔️ Registro de usuarios con encriptación bcrypt
+- ✔️ Inicio de sesión con JWT
+- ✔️ Seguridad con `CustomUserDetailsService` y filtros JWT
+- ✔️ Documentación Swagger operativa
+- ✔️ Endpoints protegidos por roles aún no implementados
+- ✔️ Pruebas exitosas con Postman
 
 ---
 
 ## 🧪 Pruebas realizadas
 
-Verificado con Postman:
+Probado y verificado con Postman:
 
-- Endpoint POST /api/auth/login funcionando correctamente con usuarios registrados → ✅
-- Endpoint POST /api/usuarios/registrar permite registrar usuarios nuevos con contraseña encriptada (bcrypt) → ✅
-- Autenticación básica → ✅
-- Acceso autenticado a endpoints protegidos → ✅
-- Visualización en Swagger → ✅
-- Se excluye el campo contraseña en las respuestas por seguridad
+- ✅ POST `/api/usuarios/registrar`: creación de usuarios con contraseña encriptada
+- ✅ POST `/api/auth/login`: genera token JWT válido
+- ✅ GET `/api/usuarios/perfil`: autenticación con JWT correcta
+- ✅ Swagger cargando correctamente los endpoints
+- ✅ No se expone la contraseña en respuestas (uso correcto de DTOs)
 
 ---
 
 ## 🔒 Buenas prácticas aplicadas
 
-- Contraseñas encriptadas con BCrypt
-- Contraseñas excluidas de respuestas JSON (uso de DTO)
+- Uso de `BCryptPasswordEncoder` para contraseñas
+- Exclusión de campos sensibles en las respuestas
 - Separación de configuración sensible (`application.properties` no versionado)
-- Uso de `UserDetailsService` personalizado
-- `SecurityFilterChain` moderna (sin usar WebSecurityConfigurerAdapter)
+- Uso de DTOs para entrada y salida de datos
+- Autenticación JWT mediante `JwtAuthenticationFilter`
+- Configuración moderna de seguridad (`SecurityFilterChain`)
 
 ---
 
@@ -119,29 +137,31 @@ Verificado con Postman:
 - Java 17
 - Base de datos: MariaDB
 - Swagger UI para documentación de API
-- Postman para pruebas manuales
+- Postman para pruebas
 - Terminal: Tilix + Tmux
 
 ---
 
 ## 📌 Próximos pasos
 
-- Validar que el correo no esté registrado previamente en /registrar
-- Manejar errores con respuestas HTTP adecuadas (400, 409, etc.)
-- Mejorar documentación Swagger (descripciones, ejemplos)
-- Implementar sistema de roles (si aplica)
-- Añadir tests unitarios y de integración
-- Preparar entorno para despliegue
+- 🔄 Validación para evitar correos duplicados al registrar
+- ⚠️ Manejo de errores (400, 401, 409, etc.)
+- 🧾 Mejorar documentación Swagger con descripciones y ejemplos
+- 🔐 Implementar roles y permisos (ADMIN, USER)
+- 🧪 Añadir pruebas unitarias e integración
+- ☁️ Configurar entorno para despliegue futuro
 
 ---
 
 ## 🤝 Contribución
 
 Podés colaborar abriendo issues o enviando pull requests.  
-Toda sugerencia o reporte de error es bienvenido.
+Toda sugerencia, mejora o reporte de error es bienvenido.
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto es de carácter académico y formativo. Puede reutilizarse con fines educativos.
+Proyecto académico y formativo. Puede ser reutilizado con fines educativos.
+
+---
