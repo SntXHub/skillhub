@@ -1,4 +1,4 @@
-# SkillHub - Backend (Spring Boot)
+# SkillHub -- Backend (Spring Boot)
 
 Backend para **SkillHub**, una plataforma de gestión de usuarios y habilidades. Este proyecto está desarrollado con tecnologías modernas del ecosistema Java, e implementa autenticación segura mediante JWT.
 
