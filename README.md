@@ -57,9 +57,11 @@ cp src/main/resources/application-example.properties src/main/resources/applicat
 ## 📮 Endpoints disponibles
 
 ### POST `/api/usuarios/registrar`
+
 Registra un nuevo usuario.
 
 **Body (JSON):**
+
 ```json
 {
   "nombre": "Nombre Apellido",
@@ -69,9 +71,11 @@ Registra un nuevo usuario.
 ```
 
 ### POST `/api/auth/login`
+
 Devuelve un JWT válido para autenticación de endpoints protegidos.
 
 **Body (JSON):**
+
 ```json
 {
   "correo": "usuario@email.com",
@@ -80,9 +84,11 @@ Devuelve un JWT válido para autenticación de endpoints protegidos.
 ```
 
 ### GET `/api/usuarios`
+
 Devuelve todos los usuarios registrados (requiere autenticación con JWT).
 
 ### GET `/api/usuarios/perfil`
+
 Devuelve los datos del usuario autenticado.
 
 ---
