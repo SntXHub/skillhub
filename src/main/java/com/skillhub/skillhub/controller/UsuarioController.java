@@ -5,7 +5,10 @@ import com.skillhub.skillhub.dto.UsuarioResponseDTO;
 import com.skillhub.skillhub.model.Usuario;
 import com.skillhub.skillhub.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,16 +20,11 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     // POST: /api/usuarios/registrar
     @PostMapping("/registrar")
-    public UsuarioResponseDTO registrar(@RequestBody UsuarioDTO dto) {
-        if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
-            throw new RuntimeException("Ya existe un usuario con ese correo");
-        }
-
+    public Usuario registrar(@RequestBody UsuarioDTO dto) {
         String contraseñaEncriptada = passwordEncoder.encode(dto.getContraseña());
 
         Usuario usuario = Usuario.builder()
@@ -35,9 +33,7 @@ public class UsuarioController {
                 .contraseña(contraseñaEncriptada)
                 .build();
 
-        Usuario guardado = usuarioRepository.save(usuario);
-
-        return new UsuarioResponseDTO(guardado.getId(), guardado.getNombre(), guardado.getCorreo());
+        return usuarioRepository.save(usuario);
     }
 
     // GET: /api/usuarios
@@ -50,5 +46,20 @@ public class UsuarioController {
                         usuario.getNombre(),
                         usuario.getCorreo()))
                 .toList();
+    }
+
+    // ✅ NUEVO: GET /api/usuarios/perfil
+    @GetMapping("/perfil")
+    public ResponseEntity<UsuarioResponseDTO> obtenerPerfil(Authentication authentication) {
+        String correo = authentication.getName();
+        Usuario usuario = usuarioRepository.findByCorreo(correo)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        UsuarioResponseDTO response = new UsuarioResponseDTO(
+                usuario.getId(),
+                usuario.getNombre(),
+                usuario.getCorreo());
+
+        return ResponseEntity.ok(response);
     }
 }

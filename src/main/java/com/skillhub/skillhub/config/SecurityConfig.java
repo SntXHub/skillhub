@@ -68,4 +68,17 @@ public class SecurityConfig {
 
         return http.build();
     }
+    
+    // Si necesitas probar el BCryptPasswordEncoder, puedes descomentar lo siguiente
+
+    // public static void main(String[] args) {
+    // BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    //
+    // String input = "123456";
+    // String hash = "$2a$10$KFYRkOfCMZwe7YkHDshQROpJ5bxTAAMbEmakNZB8LyQdg2IRbJt6a";
+    //
+    // boolean match = encoder.matches(input, hash);
+    // System.out.println("¿Coincide? " + match);
+    // }
+
 }

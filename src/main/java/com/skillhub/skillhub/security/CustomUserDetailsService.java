@@ -22,6 +22,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con correo: " + correo));
 
+        System.out.println("INTENTO LOGIN:");
+        System.out.println("Correo recibido: " + correo);
+        System.out.println("Contraseña en DB (encriptada): " + usuario.getContraseña());
+
         return new User(
                 usuario.getCorreo(),
                 usuario.getContraseña(),
