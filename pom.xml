@@ -53,11 +53,15 @@
     		<artifactId>mariadb-java-client</artifactId>
     		<version>3.3.3</version>
 		</dependency>
+		
+		<!-- Lombok -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<!-- Lombok -->
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -73,7 +77,7 @@
 		<dependency>
     		<groupId>org.springdoc</groupId>
     		<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    		<version>2.5.0</version>
+    		<version>2.3.0</version>
 		</dependency>
 		<!-- Swagger OpenAPI 3 -->
 		
@@ -100,6 +104,10 @@
     		<version>5.0.0</version>
     		<scope>provided</scope>
 		</dependency>
+		<dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>
