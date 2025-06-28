@@ -32,15 +32,21 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    // 🔓 Swagger abierto sin seguridad
     @Bean
     @Order(1)
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**",
-                        "/swagger-ui.html")
+                .securityMatcher(
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/swagger-resources/**",
+                        "/webjars/**",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**",
+                        "/v3/api-docs/swagger-config")
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll());
 
         return http.build();
     }
