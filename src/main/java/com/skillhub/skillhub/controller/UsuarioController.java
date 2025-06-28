@@ -5,6 +5,11 @@ import com.skillhub.skillhub.dto.UsuarioResponseDTO;
 import com.skillhub.skillhub.model.Usuario;
 import com.skillhub.skillhub.repository.UsuarioRepository;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -26,7 +32,12 @@ public class UsuarioController {
 
         private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        // POST: /api/usuarios/registrar
+        @Operation(summary = "Registrar un nuevo usuario", description = "Registra un nuevo usuario con nombre, correo y contraseña. La contraseña se almacena encriptada.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class))),
+                        @ApiResponse(responseCode = "409", description = "El correo ya está registrado"),
+                        @ApiResponse(responseCode = "400", description = "Datos inválidos enviados")
+        })
         @PostMapping("/registrar")
         public ResponseEntity<?> registrar(@Valid @RequestBody UsuarioDTO dto) {
                 if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
@@ -53,7 +64,8 @@ public class UsuarioController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
 
-        // GET: /api/usuarios
+        @Operation(summary = "Obtener todos los usuarios", description = "Devuelve una lista con todos los usuarios registrados.")
+        @ApiResponse(responseCode = "200", description = "Lista de usuarios devuelta exitosamente")
         @GetMapping
         public List<UsuarioResponseDTO> obtenerTodos() {
                 return usuarioRepository.findAll()
@@ -62,10 +74,11 @@ public class UsuarioController {
                                                 usuario.getId(),
                                                 usuario.getNombre(),
                                                 usuario.getCorreo()))
-                                .toList();
+                                .collect(Collectors.toList());
         }
 
-        // ✅ NUEVO: GET /api/usuarios/perfil
+        @Operation(summary = "Obtener el perfil del usuario autenticado", description = "Devuelve los datos del usuario actualmente autenticado.")
+        @ApiResponse(responseCode = "200", description = "Perfil devuelto exitosamente")
         @GetMapping("/perfil")
         public ResponseEntity<UsuarioResponseDTO> obtenerPerfil(Authentication authentication) {
                 String correo = authentication.getName();

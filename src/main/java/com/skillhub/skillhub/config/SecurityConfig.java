@@ -32,6 +32,7 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+    // 🔓 Permitir acceso solo a Swagger sin seguridad
     @Bean
     @Order(1)
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
