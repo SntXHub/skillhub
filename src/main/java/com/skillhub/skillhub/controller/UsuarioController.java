@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,7 @@ public class UsuarioController {
         }
 
         @Operation(summary = "Obtener todos los usuarios", description = "Devuelve una lista con todos los usuarios registrados.")
+        @SecurityRequirement(name = "bearerAuth")
         @ApiResponse(responseCode = "200", description = "Lista de usuarios devuelta exitosamente")
         @GetMapping
         public List<UsuarioResponseDTO> obtenerTodos() {
@@ -77,11 +80,11 @@ public class UsuarioController {
                                 .collect(Collectors.toList());
         }
 
-        // ✅ NUEVO: GET /api/usuarios/perfil
-        @Operation(summary = "Obtener perfil del usuario autenticado", description = "Devuelve los datos del usuario actualmente autenticado. Requiere un token JWT en el encabezado Authorization.")
+        @Operation(summary = "Obtener perfil de usuario autenticado", description = "Devuelve los datos del usuario que está autenticado mediante JWT.")
+        @SecurityRequirement(name = "bearerAuth")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Perfil del usuario obtenido exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class))),
-                        @ApiResponse(responseCode = "401", description = "No autorizado - Token JWT no presente o inválido"),
+                        @ApiResponse(responseCode = "200", description = "Perfil de usuario obtenido correctamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "No autorizado, token inválido o no presente"),
                         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
         })
         @GetMapping("/perfil")
@@ -97,5 +100,4 @@ public class UsuarioController {
 
                 return ResponseEntity.ok(response);
         }
-
 }

@@ -32,7 +32,7 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    // 🔓 Permitir acceso solo a Swagger sin seguridad
+    // Cadena de seguridad para Swagger y endpoints públicos
     @Bean
     @Order(1)
     public SecurityFilterChain swaggerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -40,19 +40,18 @@ public class SecurityConfig {
                 .securityMatcher(
                         "/swagger-ui/**",
                         "/swagger-ui.html",
+                        "/v3/api-docs/**",
                         "/swagger-resources/**",
                         "/webjars/**",
-                        "/v3/api-docs",
-                        "/v3/api-docs/**",
-                        "/v3/api-docs/swagger-config")
+                        "/api/auth/login",
+                        "/api/usuarios/registrar")
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll());
-
         return http.build();
     }
 
-    // 🔐 Seguridad general de la API (JWT)
+    // Cadena de seguridad general con JWT para el resto de endpoints
     @Bean
     @Order(2)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -60,10 +59,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/usuarios/registrar").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

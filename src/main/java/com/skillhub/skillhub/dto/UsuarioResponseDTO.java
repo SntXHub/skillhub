@@ -2,7 +2,7 @@ package com.skillhub.skillhub.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "DTO con la información devuelta tras registrar un usuario")
+@Schema(description = "DTO para la respuesta con datos del usuario")
 public class UsuarioResponseDTO {
 
     @Schema(description = "ID del usuario", example = "1")
