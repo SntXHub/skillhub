@@ -77,8 +77,13 @@ public class UsuarioController {
                                 .collect(Collectors.toList());
         }
 
-        @Operation(summary = "Obtener el perfil del usuario autenticado", description = "Devuelve los datos del usuario actualmente autenticado.")
-        @ApiResponse(responseCode = "200", description = "Perfil devuelto exitosamente")
+        // ✅ NUEVO: GET /api/usuarios/perfil
+        @Operation(summary = "Obtener perfil del usuario autenticado", description = "Devuelve los datos del usuario actualmente autenticado. Requiere un token JWT en el encabezado Authorization.")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Perfil del usuario obtenido exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class))),
+                        @ApiResponse(responseCode = "401", description = "No autorizado - Token JWT no presente o inválido"),
+                        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+        })
         @GetMapping("/perfil")
         public ResponseEntity<UsuarioResponseDTO> obtenerPerfil(Authentication authentication) {
                 String correo = authentication.getName();
@@ -92,4 +97,5 @@ public class UsuarioController {
 
                 return ResponseEntity.ok(response);
         }
+
 }
