@@ -63,7 +63,8 @@ Registra un nuevo usuario.
 **Body (JSON):**
 ```json
 {
-  "nombre": "Nombre Apellido",
+  "nombre": "Nombre",
+  "apellido": "Apellido",
   "correo": "usuario@email.com",
   "contraseña": "password123"
 }
