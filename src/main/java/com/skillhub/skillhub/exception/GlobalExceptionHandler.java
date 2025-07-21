@@ -25,3 +25,5 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
     }
 }
+
+// Utilizando Conventional Commits

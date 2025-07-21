@@ -11,3 +11,5 @@ public class SkillhubApplication {
 		SpringApplication.run(SkillhubApplication.class, args);
 	}
 }
+
+// Utilizando Conventional Commits

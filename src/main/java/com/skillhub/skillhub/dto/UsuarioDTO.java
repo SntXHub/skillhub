@@ -10,9 +10,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "DTO para el registro de un nuevo usuario")
 public class UsuarioDTO {
 
-    @Schema(description = "Nombre completo del usuario", example = "Santiago Cabrera", required = true)
+    @Schema(description = "Nombre del usuario", example = "Santiago", required = true)
     @NotBlank(message = "El nombre es obligatorio.")
     private String nombre;
+
+    @Schema(description = "Apellido del usuario", example = "Cabrera", required = true)
+    @NotBlank(message = "El apellido es obligatorio.")
+    private String apellido;
 
     @Schema(description = "Correo electrónico del usuario", example = "santiago@example.com", required = true)
     @NotBlank(message = "El correo es obligatorio.")
@@ -24,3 +28,5 @@ public class UsuarioDTO {
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres.")
     private String contraseña;
 }
+
+// Utilizando Conventional Commits

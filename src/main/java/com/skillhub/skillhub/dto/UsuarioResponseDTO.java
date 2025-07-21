@@ -1,34 +1,31 @@
 package com.skillhub.skillhub.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
 
-@Schema(description = "DTO para la respuesta con datos del usuario")
+@Data
+@Schema(description = "DTO para responder con datos del usuario")
 public class UsuarioResponseDTO {
 
-    @Schema(description = "ID del usuario", example = "1")
+    @Schema(description = "ID del usuario")
     private Long id;
 
-    @Schema(description = "Nombre completo del usuario", example = "Santiago Cabrera")
+    @Schema(description = "Nombre del usuario")
     private String nombre;
 
-    @Schema(description = "Correo electrónico del usuario", example = "santiago@example.com")
+    @Schema(description = "Apellido del usuario")
+    private String apellido;
+
+    @Schema(description = "Correo electrónico del usuario")
     private String correo;
 
-    public UsuarioResponseDTO(Long id, String nombre, String correo) {
+    // Constructor completo
+    public UsuarioResponseDTO(Long id, String nombre, String apellido, String correo) {
         this.id = id;
         this.nombre = nombre;
+        this.apellido = apellido;
         this.correo = correo;
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
 }
+
+// Utilizando Conventional Commits

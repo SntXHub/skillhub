@@ -22,8 +22,7 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getCorreo(), request.getContraseña())
-        );
+                new UsernamePasswordAuthenticationToken(request.getCorreo(), request.getContraseña()));
 
         User user = (User) authentication.getPrincipal();
         String token = jwtService.generateToken(user.getUsername());
@@ -32,3 +31,4 @@ public class AuthService {
     }
 }
 
+// Utilizando Conventional Commits

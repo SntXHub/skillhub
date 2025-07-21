@@ -6,20 +6,16 @@ import com.skillhub.skillhub.model.Usuario;
 import com.skillhub.skillhub.repository.UsuarioRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,77 +23,73 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios")
 public class UsuarioController {
 
-        @Autowired
-        private UsuarioRepository usuarioRepository;
+        private final UsuarioRepository usuarioRepository;
+        private final PasswordEncoder passwordEncoder;
 
-        private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        public UsuarioController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
+                this.usuarioRepository = usuarioRepository;
+                this.passwordEncoder = passwordEncoder;
+        }
 
-        @Operation(summary = "Registrar un nuevo usuario", description = "Registra un nuevo usuario con nombre, correo y contraseña. La contraseña se almacena encriptada.")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class))),
-                        @ApiResponse(responseCode = "409", description = "El correo ya está registrado"),
-                        @ApiResponse(responseCode = "400", description = "Datos inválidos enviados")
-        })
         @PostMapping("/registrar")
-        public ResponseEntity<?> registrar(@Valid @RequestBody UsuarioDTO dto) {
-                if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
-                        return ResponseEntity
-                                        .status(HttpStatus.CONFLICT)
-                                        .body("El correo ya está registrado.");
+        @Operation(summary = "Registrar nuevo usuario")
+        public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
+                if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
+                        return ResponseEntity.status(HttpStatus.CONFLICT).build();
                 }
 
-                String contraseñaEncriptada = passwordEncoder.encode(dto.getContraseña());
-
-                Usuario usuario = Usuario.builder()
-                                .nombre(dto.getNombre())
-                                .correo(dto.getCorreo())
-                                .contraseña(contraseñaEncriptada)
+                Usuario nuevoUsuario = Usuario.builder()
+                                .nombre(usuarioDTO.getNombre())
+                                .apellido(usuarioDTO.getApellido())
+                                .correo(usuarioDTO.getCorreo())
+                                .contraseña(passwordEncoder.encode(usuarioDTO.getContraseña()))
                                 .build();
 
-                Usuario creado = usuarioRepository.save(usuario);
+                Usuario creado = usuarioRepository.save(nuevoUsuario);
 
                 UsuarioResponseDTO response = new UsuarioResponseDTO(
                                 creado.getId(),
                                 creado.getNombre(),
+                                creado.getApellido(),
                                 creado.getCorreo());
 
                 return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
 
-        @Operation(summary = "Obtener todos los usuarios", description = "Devuelve una lista con todos los usuarios registrados.")
-        @SecurityRequirement(name = "bearerAuth")
-        @ApiResponse(responseCode = "200", description = "Lista de usuarios devuelta exitosamente")
+        @GetMapping("/perfil")
+        @Operation(summary = "Obtener el perfil del usuario autenticado", security = @SecurityRequirement(name = "bearerAuth"))
+        public ResponseEntity<UsuarioResponseDTO> obtenerPerfil(@AuthenticationPrincipal UserDetails userDetails) {
+                String correo = userDetails.getUsername();
+                Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
+
+                if (usuario == null) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                }
+
+                UsuarioResponseDTO response = new UsuarioResponseDTO(
+                                usuario.getId(),
+                                usuario.getNombre(),
+                                usuario.getApellido(),
+                                usuario.getCorreo());
+
+                return ResponseEntity.ok(response);
+        }
+
         @GetMapping
-        public List<UsuarioResponseDTO> obtenerTodos() {
+        @Operation(summary = "Listar todos los usuarios (no requiere autenticación)")
+        public List<UsuarioResponseDTO> listarUsuarios() {
                 return usuarioRepository.findAll()
                                 .stream()
                                 .map(usuario -> new UsuarioResponseDTO(
                                                 usuario.getId(),
                                                 usuario.getNombre(),
+                                                usuario.getApellido(),
                                                 usuario.getCorreo()))
                                 .collect(Collectors.toList());
         }
-
-        @Operation(summary = "Obtener perfil de usuario autenticado", description = "Devuelve los datos del usuario que está autenticado mediante JWT.")
-        @SecurityRequirement(name = "bearerAuth")
-        @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Perfil de usuario obtenido correctamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioResponseDTO.class))),
-                        @ApiResponse(responseCode = "401", description = "No autorizado, token inválido o no presente"),
-                        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-        })
-        @GetMapping("/perfil")
-        public ResponseEntity<UsuarioResponseDTO> obtenerPerfil(Authentication authentication) {
-                String correo = authentication.getName();
-                Usuario usuario = usuarioRepository.findByCorreo(correo)
-                                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
-
-                UsuarioResponseDTO response = new UsuarioResponseDTO(
-                                usuario.getId(),
-                                usuario.getNombre(),
-                                usuario.getCorreo());
-
-                return ResponseEntity.ok(response);
-        }
 }
+
+// Utilizando Conventional Commits

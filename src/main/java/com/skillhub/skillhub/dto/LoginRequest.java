@@ -20,3 +20,5 @@ public class LoginRequest {
         this.contraseña = contraseña;
     }
 }
+
+// Utilizando Conventional Commits

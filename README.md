@@ -1,6 +1,6 @@
 # SkillHub - Backend (Spring Boot)
 
-Backend para **SkillHub**, una plataforma de gestión de usuarios y habilidades. Este proyecto está desarrollado con tecnologías modernas del ecosistema Java, e implementa autenticación segura mediante JWT.
+Backend para **SkillHub**, una plataforma de gestión de usuarios y habilidades. Este proyecto está desarrollado con tecnologías modernas del ecosistema Java e implementa autenticación segura mediante JWT.
 
 ---
 
@@ -61,7 +61,6 @@ cp src/main/resources/application-example.properties src/main/resources/applicat
 Registra un nuevo usuario.
 
 **Body (JSON):**
-
 ```json
 {
   "nombre": "Nombre Apellido",
@@ -70,12 +69,13 @@ Registra un nuevo usuario.
 }
 ```
 
+---
+
 ### POST `/api/auth/login`
 
 Devuelve un JWT válido para autenticación de endpoints protegidos.
 
 **Body (JSON):**
-
 ```json
 {
   "correo": "usuario@email.com",
@@ -83,14 +83,19 @@ Devuelve un JWT válido para autenticación de endpoints protegidos.
 }
 ```
 
+---
+
 ### GET `/api/usuarios` 🔒
 
 Devuelve todos los usuarios registrados.  
 **Requiere token JWT** en el header de autorización.
 
+---
+
 ### GET `/api/usuarios/perfil` 🔒
 
-Devuelve los datos del usuario autenticado mediante JWT.
+Devuelve los datos del usuario autenticado mediante JWT.  
+**Requiere token JWT** en el header de autorización.
 
 ---
 

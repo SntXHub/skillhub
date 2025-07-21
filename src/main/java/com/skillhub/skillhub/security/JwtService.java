@@ -59,3 +59,5 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 }
+
+// Utilizando Conventional Commits

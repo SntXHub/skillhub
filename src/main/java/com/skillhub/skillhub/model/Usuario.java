@@ -4,23 +4,28 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Table(name = "usuarios")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Table(name = "usuarios")
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String correo;
-
-    @Column(nullable = false)
     private String nombre;
 
-    @Column(nullable = false)
+    private String apellido; // ← NUEVO CAMPO
+
+    @Column(unique = true)
+    private String correo;
+
     private String contraseña;
+
+    // Podés agregar otros campos como rol, fechaRegistro, etc. más adelante si hace
+    // falta
 }
+
+// Utilizando Conventional Commits
