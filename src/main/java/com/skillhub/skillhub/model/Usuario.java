@@ -22,10 +22,8 @@ public class Usuario {
     @Column(unique = true)
     private String correo;
 
-    private String contraseña;
+    private String contrasena;
 
     // Podés agregar otros campos como rol, fechaRegistro, etc. más adelante si hace
     // falta
 }
-
-// Utilizando Conventional Commits

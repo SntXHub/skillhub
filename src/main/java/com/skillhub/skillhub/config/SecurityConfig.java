@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/usuarios/registrar",
-                                "/api/usuarios", // <--- Acceso público explícito
+                                "/api/usuarios",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",

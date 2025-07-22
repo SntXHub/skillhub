@@ -1,9 +1,14 @@
 package com.skillhub.skillhub.security;
 
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.stereotype.Service;
+
 import com.skillhub.skillhub.model.Usuario;
 import com.skillhub.skillhub.repository.UsuarioRepository;
-import org.springframework.security.core.userdetails.*;
-import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
@@ -12,7 +17,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
 
-    // Constructor sin @Autowired (opcional desde Spring 4.3 si solo hay uno)
     public CustomUserDetailsService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
@@ -20,18 +24,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
         Usuario usuario = usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con correo: " + correo));
-
-        System.out.println("INTENTO LOGIN:");
-        System.out.println("Correo recibido: " + correo);
-        System.out.println("Contraseña en DB (encriptada): " + usuario.getContraseña());
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con el correo: " + correo));
 
         return new User(
-                usuario.getCorreo(),
-                usuario.getContraseña(),
-                Collections.emptyList() // Aún sin roles definidos
-        );
+                usuario.getCorreo(), // ← CAMBIO
+                usuario.getContrasena(), // ← CAMBIO
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
     }
 }
-
-// Utilizando Conventional Commits

@@ -5,8 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@EnableConfigurationProperties(JwtProperties.class)
 @SpringBootApplication
+@EnableConfigurationProperties(JwtProperties.class)
 public class SkillhubApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SkillhubApplication.class, args);

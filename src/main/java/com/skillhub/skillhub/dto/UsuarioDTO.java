@@ -26,7 +26,5 @@ public class UsuarioDTO {
     @Schema(description = "Contraseña del usuario (mínimo 6 caracteres)", example = "123456", required = true)
     @NotBlank(message = "La contraseña es obligatoria.")
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres.")
-    private String contraseña;
+    private String contrasena;
 }
-
-// Utilizando Conventional Commits

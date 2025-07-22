@@ -1,95 +1,51 @@
 package com.skillhub.skillhub.controller;
 
-import com.skillhub.skillhub.dto.UsuarioDTO;
 import com.skillhub.skillhub.dto.UsuarioResponseDTO;
-import com.skillhub.skillhub.model.Usuario;
-import com.skillhub.skillhub.repository.UsuarioRepository;
+import com.skillhub.skillhub.dto.UsuarioUpdateDTO;
+import com.skillhub.skillhub.service.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/api/usuarios")
-@Tag(name = "Usuarios", description = "Operaciones relacionadas con usuarios")
 public class UsuarioController {
 
-        private final UsuarioRepository usuarioRepository;
-        private final PasswordEncoder passwordEncoder;
+        private final UsuarioService usuarioService;
 
-        public UsuarioController(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
-                this.usuarioRepository = usuarioRepository;
-                this.passwordEncoder = passwordEncoder;
+        public UsuarioController(UsuarioService usuarioService) {
+                this.usuarioService = usuarioService;
         }
 
-        @PostMapping("/registrar")
-        @Operation(summary = "Registrar nuevo usuario")
-        public ResponseEntity<UsuarioResponseDTO> registrarUsuario(@Valid @RequestBody UsuarioDTO usuarioDTO) {
-                if (usuarioRepository.existsByCorreo(usuarioDTO.getCorreo())) {
-                        return ResponseEntity.status(HttpStatus.CONFLICT).build();
-                }
-
-                Usuario nuevoUsuario = Usuario.builder()
-                                .nombre(usuarioDTO.getNombre())
-                                .apellido(usuarioDTO.getApellido())
-                                .correo(usuarioDTO.getCorreo())
-                                .contraseña(passwordEncoder.encode(usuarioDTO.getContraseña()))
-                                .build();
-
-                Usuario creado = usuarioRepository.save(nuevoUsuario);
-
-                UsuarioResponseDTO response = new UsuarioResponseDTO(
-                                creado.getId(),
-                                creado.getNombre(),
-                                creado.getApellido(),
-                                creado.getCorreo());
-
-                return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }
-
+        @Operation(summary = "Obtener perfil del usuario autenticado")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Perfil obtenido correctamente"),
+                        @ApiResponse(responseCode = "401", description = "No autorizado")
+        })
         @GetMapping("/perfil")
-        @Operation(summary = "Obtener el perfil del usuario autenticado", security = @SecurityRequirement(name = "bearerAuth"))
-        public ResponseEntity<UsuarioResponseDTO> obtenerPerfil(@AuthenticationPrincipal UserDetails userDetails) {
-                String correo = userDetails.getUsername();
-                Usuario usuario = usuarioRepository.findByCorreo(correo).orElse(null);
-
-                if (usuario == null) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-                }
-
-                UsuarioResponseDTO response = new UsuarioResponseDTO(
-                                usuario.getId(),
-                                usuario.getNombre(),
-                                usuario.getApellido(),
-                                usuario.getCorreo());
-
-                return ResponseEntity.ok(response);
+        public ResponseEntity<UsuarioResponseDTO> obtenerPerfil() {
+                UsuarioResponseDTO perfil = usuarioService.obtenerPerfilActual();
+                return ResponseEntity.ok(perfil);
         }
 
-        @GetMapping
-        @Operation(summary = "Listar todos los usuarios (no requiere autenticación)")
-        public List<UsuarioResponseDTO> listarUsuarios() {
-                return usuarioRepository.findAll()
-                                .stream()
-                                .map(usuario -> new UsuarioResponseDTO(
-                                                usuario.getId(),
-                                                usuario.getNombre(),
-                                                usuario.getApellido(),
-                                                usuario.getCorreo()))
-                                .collect(Collectors.toList());
+        @Operation(summary = "Actualizar nombre y apellido de un usuario")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente"),
+                        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+        })
+        @PutMapping("/{id}")
+        public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(
+                        @PathVariable Long id,
+                        @Valid @RequestBody UsuarioUpdateDTO dto) {
+
+                return usuarioService.updateUsuario(id, dto)
+                                .map(ResponseEntity::ok)
+                                .orElse(ResponseEntity.notFound().build());
         }
 }
-
-// Utilizando Conventional Commits
