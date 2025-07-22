@@ -56,11 +56,13 @@ cp src/main/resources/application-example.properties src/main/resources/applicat
 
 ## 📮 Endpoints disponibles
 
+Todos los endpoints aceptan y devuelven contenido en formato JSON.
+
 ### POST `/api/usuarios/registrar`
 
 Registra un nuevo usuario.
 
-**Body (JSON):**
+**Request Body:**
 ```json
 {
   "nombre": "Nombre",
@@ -70,17 +72,34 @@ Registra un nuevo usuario.
 }
 ```
 
+**Response Body:**
+```json
+{
+  "id": 1,
+  "nombre": "Nombre",
+  "apellido": "Apellido",
+  "correo": "usuario@email.com"
+}
+```
+
 ---
 
 ### POST `/api/auth/login`
 
 Devuelve un JWT válido para autenticación de endpoints protegidos.
 
-**Body (JSON):**
+**Request Body:**
 ```json
 {
   "correo": "usuario@email.com",
   "contraseña": "password123"
+}
+```
+
+**Response Body:**
+```json
+{
+  "token": "jwt_token_generado_aquí"
 }
 ```
 
@@ -91,12 +110,34 @@ Devuelve un JWT válido para autenticación de endpoints protegidos.
 Devuelve todos los usuarios registrados.  
 **Requiere token JWT** en el header de autorización.
 
+**Response Body (ejemplo):**
+```json
+[
+  {
+    "id": 1,
+    "nombre": "Nombre",
+    "apellido": "Apellido",
+    "correo": "usuario@email.com"
+  }
+]
+```
+
 ---
 
 ### GET `/api/usuarios/perfil` 🔒
 
 Devuelve los datos del usuario autenticado mediante JWT.  
 **Requiere token JWT** en el header de autorización.
+
+**Response Body:**
+```json
+{
+  "id": 1,
+  "nombre": "Nombre",
+  "apellido": "Apellido",
+  "correo": "usuario@email.com"
+}
+```
 
 ---
 
@@ -184,6 +225,4 @@ Toda sugerencia, mejora o reporte de error es bienvenido.
 
 ## 📄 Licencia
 
-Proyecto académico y formativo. Puede ser reutilizado con fines educativos.
-
----
+Distribuido bajo la licencia MIT.
