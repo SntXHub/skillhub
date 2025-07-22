@@ -11,5 +11,3 @@ public class LoginResponse {
         return token;
     }
 }
-
-// Utilizando Conventional Commits

@@ -5,27 +5,25 @@ import lombok.Data;
 
 @Data
 @Schema(description = "DTO para responder con datos del usuario")
-public class UsuarioResponseDTO {
+public class UserResponseDTO {
 
     @Schema(description = "ID del usuario")
     private Long id;
 
     @Schema(description = "Nombre del usuario")
-    private String nombre;
+    private String name;
 
     @Schema(description = "Apellido del usuario")
-    private String apellido;
+    private String lastName;
 
     @Schema(description = "Correo electrónico del usuario")
-    private String correo;
+    private String email;
 
     // Constructor completo
-    public UsuarioResponseDTO(Long id, String nombre, String apellido, String correo) {
+    public UserResponseDTO(Long id, String name, String lastName, String email) {
         this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.correo = correo;
+        this.name = name;
+        this.lastName = lastName;
+        this.email = email;
     }
 }
-
-// Utilizando Conventional Commits

@@ -1,8 +1,8 @@
 package com.skillhub.skillhub.controller;
 
-import com.skillhub.skillhub.dto.UsuarioResponseDTO;
-import com.skillhub.skillhub.dto.UsuarioUpdateDTO;
-import com.skillhub.skillhub.service.UsuarioService;
+import com.skillhub.skillhub.dto.UserResponseDTO;
+import com.skillhub.skillhub.dto.UserUpdateDTO;
+import com.skillhub.skillhub.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/usuarios")
-public class UsuarioController {
+@RequestMapping("/api/users")
+public class UserController {
 
-        private final UsuarioService usuarioService;
+        private final UserService userService;
 
-        public UsuarioController(UsuarioService usuarioService) {
-                this.usuarioService = usuarioService;
+        public UserController(UserService userService) {
+                this.userService = userService;
         }
 
         @Operation(summary = "Obtener perfil del usuario autenticado")
@@ -28,10 +28,10 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "200", description = "Perfil obtenido correctamente"),
                         @ApiResponse(responseCode = "401", description = "No autorizado")
         })
-        @GetMapping("/perfil")
-        public ResponseEntity<UsuarioResponseDTO> obtenerPerfil() {
-                UsuarioResponseDTO perfil = usuarioService.obtenerPerfilActual();
-                return ResponseEntity.ok(perfil);
+        @GetMapping("/profile")
+        public ResponseEntity<UserResponseDTO> getProfile() {
+                UserResponseDTO profile = userService.getCurrentProfile();
+                return ResponseEntity.ok(profile);
         }
 
         @Operation(summary = "Actualizar nombre y apellido de un usuario")
@@ -40,11 +40,11 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
         })
         @PutMapping("/{id}")
-        public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(
+        public ResponseEntity<UserResponseDTO> updateUser(
                         @PathVariable Long id,
-                        @Valid @RequestBody UsuarioUpdateDTO dto) {
+                        @Valid @RequestBody UserUpdateDTO dto) {
 
-                return usuarioService.updateUsuario(id, dto)
+                return userService.updateUsuario(id, dto)
                                 .map(ResponseEntity::ok)
                                 .orElse(ResponseEntity.notFound().build());
         }

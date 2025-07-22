@@ -27,10 +27,10 @@ target/
 ### VS Code ###
 .vscode/
 
-### Configuración sensible ###
+### Responsive configuration ###
 src/main/resources/application.properties
 
-### Archivos temporales y logs ###
+### Temporary files and logs ###
 *.log
 *.tmp
 *.swp

@@ -7,15 +7,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UsuarioUpdateDTO {
+public class UserUpdateDTO {
 
     @Schema(description = "Nombre del usuario", example = "Juan", required = true)
     @NotBlank(message = "El nombre no puede estar vacío")
-    private String nombre;
+    private String name;
 
     @Schema(description = "Apellido del usuario", example = "Pérez", required = true)
     @NotBlank(message = "El apellido no puede estar vacío")
-    private String apellido;
+    private String lastName;
 
     // En esta etapa no se permite cambiar el correo ni la contraseña
 }
