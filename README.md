@@ -1,228 +1,123 @@
-# SkillHub - Backend (Spring Boot)
 
-Backend para **SkillHub**, una plataforma de gestión de usuarios y habilidades. Este proyecto está desarrollado con tecnologías modernas del ecosistema Java e implementa autenticación segura mediante JWT.
+# SkillHub Backend
 
----
+This is the backend API for **SkillHub**, a professional learning platform for connecting users and courses, built using **Java**, **Spring Boot**, and **MariaDB**.
 
-## 🚀 Tecnologías utilizadas
+## ✅ Features
+
+- User registration and login (JWT-based authentication)
+- Password encryption using BCrypt
+- Role-based access control (planned)
+- Swagger documentation (OpenAPI v3)
+- Modular architecture (DTOs, Services, Repositories, Config, Security)
+- Maven as build system
+
+## 📦 Tech Stack
 
 - Java 17+
-- Spring Boot 3.2+
+- Spring Boot 3
+- Spring Security (JWT, filters, authentication)
 - Spring Data JPA
-- Spring Security (JWT)
-- Swagger / OpenAPI 3 (`springdoc-openapi-starter-webmvc-ui`)
-- MariaDB (compatible con MySQL)
-- Lombok
+- MariaDB
 - Maven
-- Git y GitHub
-- Postman
+- Swagger / OpenAPI 3
+- Postman (for testing)
+- Docker (planned)
+- Redis & MongoDB (future integrations)
+- Terraform for Oracle Cloud infrastructure (IaC)
 
----
+## 🚀 Getting Started
 
-## ⚙️ Configuración inicial
+### Requirements
 
-1. Cloná el repositorio:
+- Java 17+
+- Maven
+- MariaDB running locally or remotely
+- IntelliJ IDEA or VSCode (recommended)
+
+### Environment Variables
+
+Create a file named `.env` or use `application.properties`:
+
+```properties
+spring.datasource.url=jdbc:mariadb://localhost:3306/skillhub_db
+spring.datasource.username=your_user
+spring.datasource.password=your_password
+
+jwt.secret=your_jwt_secret_key
+jwt.expiration=86400000
+```
+
+### Setup
 
 ```bash
-git clone https://github.com/sntxhub/skillhub-backend.git
+# Clone the repo
+git clone https://github.com/your-username/skillhub-backend.git
 cd skillhub-backend
-```
 
-2. Crear la base de datos en MariaDB:
-
-```sql
-CREATE DATABASE skillhubdb DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-3. Copiar el archivo de configuración de ejemplo:
-
-```bash
-cp src/main/resources/application-example.properties src/main/resources/application.properties
-```
-
-4. Editar `application.properties` y completar:
-
-- `spring.datasource.username`
-- `spring.datasource.password`
-- (Opcional) Cambiar el puerto o configuración JWT
-
-5. Ejecutar la aplicación:
-
-```bash
+# Run the application
 ./mvnw spring-boot:run
 ```
 
----
+> The database tables will be automatically created if `spring.jpa.hibernate.ddl-auto=update` is enabled.
 
-## 📮 Endpoints disponibles
+## 📑 API Documentation
 
-Todos los endpoints aceptan y devuelven contenido en formato JSON.
+Once the server is running, visit:
 
-### POST `/api/usuarios/registrar`
-
-Registra un nuevo usuario.
-
-**Request Body:**
-```json
-{
-  "nombre": "Nombre",
-  "apellido": "Apellido",
-  "correo": "usuario@email.com",
-  "contraseña": "password123"
-}
+```
+http://localhost:8080/swagger-ui/index.html
 ```
 
-**Response Body:**
-```json
-{
-  "id": 1,
-  "nombre": "Nombre",
-  "apellido": "Apellido",
-  "correo": "usuario@email.com"
-}
+You can log in and authorize protected endpoints using the `Authorize` button (JWT token required).
+
+## 🔒 Authentication
+
+- POST `/api/auth/login`: returns JWT token
+- POST `/api/users/register`: user registration
+- All other endpoints require Authorization header:  
+  `Authorization: Bearer <your_token>`
+
+## 🔧 Maven Commands
+
+```bash
+# Compile
+./mvnw clean compile
+
+# Run tests
+./mvnw test
+
+# Package as JAR
+./mvnw package
 ```
 
----
+## 🗃️ Project Structure
 
-### POST `/api/auth/login`
-
-Devuelve un JWT válido para autenticación de endpoints protegidos.
-
-**Request Body:**
-```json
-{
-  "correo": "usuario@email.com",
-  "contraseña": "password123"
-}
+```
+com.skillhub.skillhub
+├── config            # SecurityConfig, SwaggerConfig, etc.
+├── controller        # REST controllers
+├── dto               # Data Transfer Objects
+├── model             # Entity classes
+├── repository        # JPA Repositories
+├── security          # JWT filters and UserDetails service
+├── service           # Business logic, including JwtService
 ```
 
-**Response Body:**
-```json
-{
-  "token": "jwt_token_generado_aquí"
-}
-```
+## ✅ Roadmap (Next Steps)
+
+- Enable user roles and permissions
+- Redis caching for performance
+- MongoDB microservice for feedback and user activity
+- Terraform scripts for Oracle Cloud
+- Dockerization
+- Unit and integration tests
+
+## 👤 Author
+
+- Santiago Gabriel Cabrera - https://github.com/SntXHub
+- Student and backend developer focused on professional fullstack development
 
 ---
 
-### GET `/api/usuarios` 🔒
-
-Devuelve todos los usuarios registrados.  
-**Requiere token JWT** en el header de autorización.
-
-**Response Body (ejemplo):**
-```json
-[
-  {
-    "id": 1,
-    "nombre": "Nombre",
-    "apellido": "Apellido",
-    "correo": "usuario@email.com"
-  }
-]
-```
-
----
-
-### GET `/api/usuarios/perfil` 🔒
-
-Devuelve los datos del usuario autenticado mediante JWT.  
-**Requiere token JWT** en el header de autorización.
-
-**Response Body:**
-```json
-{
-  "id": 1,
-  "nombre": "Nombre",
-  "apellido": "Apellido",
-  "correo": "usuario@email.com"
-}
-```
-
----
-
-## 🧭 Documentación interactiva (Swagger)
-
-Una vez ejecutada la aplicación, accedé a:
-
-🔗 [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
-
-Para probar los endpoints protegidos:
-
-1. Usá el endpoint de login para obtener un token JWT.
-2. Presioná el botón `Authorize` (ícono de candado).
-3. Pegá el token en el campo:  
-   `Bearer <tu_token_aquí>`
-
----
-
-## ✅ Estado actual del proyecto
-
-- ✔️ Backend funcional y estable
-- ✔️ Registro de usuarios con validación y encriptación bcrypt
-- ✔️ Inicio de sesión con JWT
-- ✔️ Seguridad implementada con `JwtAuthenticationFilter`
-- ✔️ Swagger funcionando con autenticación y documentación detallada
-- ✔️ Control de errores comunes
-- ✔️ Base de datos persistente (MariaDB)
-- ⚠️ Roles aún no implementados
-
----
-
-## 🧪 Pruebas realizadas
-
-Probado y verificado:
-
-- ✅ POST `/api/usuarios/registrar`: creación de usuarios con validación
-- ✅ POST `/api/auth/login`: genera y devuelve token JWT
-- ✅ GET `/api/usuarios/perfil`: autenticación y recuperación de perfil
-- ✅ GET `/api/usuarios`: listado general protegido por JWT
-- ✅ Swagger permite probar todos los endpoints (protegidos y públicos)
-- ✅ Pruebas cruzadas con Postman
-
----
-
-## 🔒 Buenas prácticas aplicadas
-
-- Uso de `BCryptPasswordEncoder` para contraseñas
-- Exclusión de campos sensibles en las respuestas (con DTOs)
-- Separación de configuración sensible (`application.properties`)
-- Autenticación JWT mediante `AuthenticationManager` y filtro personalizado
-- Configuración moderna con múltiples `SecurityFilterChain`
-- Swagger con anotaciones `@Operation`, `@ApiResponse` y `@SecurityRequirement`
-
----
-
-## 🧑‍💻 Entorno de desarrollo
-
-- Sistema operativo: Debian 12
-- IDE: Visual Studio Code
-- Java 17
-- Base de datos: MariaDB
-- Swagger UI para documentación de API
-- Postman para pruebas
-- Terminal: Tilix + Tmux
-
----
-
-## 📌 Próximos pasos
-
-- 🔄 Validación adicional (nombre vacío, contraseña débil, etc.)
-- ⚠️ Mejor manejo de errores con controladores globales
-- 🔐 Implementar roles y permisos (ADMIN, USER)
-- 🧾 Separar la documentación en archivos (`API.md`, `SECURITY.md`, etc.)
-- 🧪 Añadir pruebas unitarias e integración
-- ☁️ Preparar configuración para despliegue futuro
-
----
-
-## 🤝 Contribución
-
-Podés colaborar abriendo issues o enviando pull requests.  
-Toda sugerencia, mejora o reporte de error es bienvenido.
-
----
-
-## 📄 Licencia
-
-Distribuido bajo la licencia MIT.
+> 🧠 *Keep learning. Build clean. Deploy smart.*
