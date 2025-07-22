@@ -1,9 +1,11 @@
 package com.skillhub.skillhub.security;
 
+import com.skillhub.skillhub.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -13,25 +15,24 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Clave secreta para firmar el token. En producción debería estar en
-    // configuración externa.
-    private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private final JwtProperties jwtProperties;
 
-    // Tiempo de validez del token (ejemplo: 24 horas)
-    private final long expirationMs = 24 * 60 * 60 * 1000;
-
-    public String generateToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(key)
-                .compact();
+    public JwtService(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
     }
 
-    public boolean isTokenValid(String token, String username) {
-        final String tokenUsername = extractUsername(token);
-        return (tokenUsername.equals(username) && !isTokenExpired(token));
+    private Key getSigningKey() {
+        // Asegurarse que la clave tenga al menos 256 bits (32 bytes) para HS256
+        return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes());
+    }
+
+    public String generateToken(UserDetails userDetails) {
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public String extractUsername(String token) {
@@ -48,16 +49,20 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 }
-
-// Utilizando Conventional Commits

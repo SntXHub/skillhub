@@ -2,7 +2,7 @@ package com.skillhub.skillhub.controller;
 
 import com.skillhub.skillhub.dto.LoginRequest;
 import com.skillhub.skillhub.dto.LoginResponse;
-import com.skillhub.skillhub.service.AuthService;
+import com.skillhub.skillhub.security.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
