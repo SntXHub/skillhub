@@ -1,4 +1,3 @@
-
 # SkillHub Backend
 
 This is the backend API for **SkillHub**, a professional learning platform for connecting users and courses, built using **Java**, **Spring Boot**, and **MariaDB**.
@@ -26,6 +25,17 @@ This is the backend API for **SkillHub**, a professional learning platform for c
 - Redis & MongoDB (future integrations)
 - Terraform for Oracle Cloud infrastructure (IaC)
 
+## 🛠️ Development Environment
+
+- OS: **Linux Debian 12**
+- Database: **MariaDB** (compatible with MySQL)
+- Terminal: **Tilix + Tmux**
+- IDE: **Visual Studio Code**
+- Package Manager: **Maven**
+- Java version: **17**
+- Tools: Postman, Swagger UI, Git, GitHub
+- Cloud Platform: **Oracle Cloud** (planned, with Terraform)
+
 ## 🚀 Getting Started
 
 ### Requirements
@@ -47,6 +57,8 @@ spring.datasource.password=your_password
 jwt.secret=your_jwt_secret_key
 jwt.expiration=86400000
 ```
+
+> ✅ Custom properties `jwt.secret` and `jwt.expiration` are now correctly recognized using `@ConfigurationProperties`.
 
 ### Setup
 
@@ -116,7 +128,7 @@ com.skillhub.skillhub
 ## 👤 Author
 
 - Santiago Gabriel Cabrera - https://github.com/SntXHub
-- Student and backend developer focused on professional fullstack development
+- Student and backend developer focused on professional Full Stack Development
 
 ---
 
